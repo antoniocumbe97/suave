@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken } from "./auth";
 
-export const apiURL = "http://localhost:8080";
+export const apiURL = "https://63d9-197-249-5-185.ngrok-free.app";
 export const clienteId = "my-angular-app";
 export const clientSecret = "@54321";
 
