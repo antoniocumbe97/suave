@@ -1,0 +1,33 @@
+.page-item .page-link {
+    background-color: transparent;
+    color: var(--insignio-primary-text);
+}
+
+.page-item.next {
+    background-color: transparent;
+}
+
+.page-item.prev {
+    background-color: transparent;
+}
+
+.page-item.first .page-link,
+.page-item.last .page-link,
+.page-item.next .page-link,
+.page-item.prev .page-link,
+.page-item.previous .page-link {
+    padding-bottom: 0.75rem;
+    border: 1px solid #D4D9DD;
+}
+
+.page-item.disabled .page-link {
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.page-item.active .page-link {
+    background-color: #8C207A;
+    box-shadow: none;
+    border: 1px solid #8C207A;
+    color: white;
+}
