@@ -10,7 +10,12 @@ export const Sidebar = ({ setIsOpenSidebar }) => {
   const activeLink = (match) => {
     return pathname.includes(match) ? "active" : "";
   };
-  console.log("Sidebar user", user);
+
+  const userRole = user?.role.toLowerCase() || "recruta";
+  const filteredMenu = MENU.filter(item => item.roles.includes(userRole));
+  
+  console.log("Sidebar user", user?.role);
+  console.log("Sidebar filteredMenu", filteredMenu);
   return (
     <aside
       id="layout-menu"
@@ -31,7 +36,7 @@ export const Sidebar = ({ setIsOpenSidebar }) => {
       <div className="menu-inner-shadow"></div>
 
       <ul className="menu-inner py-1">
-        {MENU.map((item) => (
+        {filteredMenu.map((item) => (
           <Fragment key={item.id}>
             <li className={`menu-item ${activeLink(item.link)}`} key={item.id}>
               <Link to={item.link} className="menu-link text-second text-nowrap">

@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 
 import { Spinner } from "./components/Spinner";
-import AuthProvider from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 import { createRoot } from 'react-dom/client';
 const LazyApp = lazy(() => import("./App"));

@@ -35,30 +35,35 @@ const MENU = [
     name: "Dashboard",
     link: SYSTEM_ROUTES.DASHBOARD.index,
     icon: <RiRectangleLine size={16} className="menu-icon" />,
+    roles: ["user", "admin"]
   },
   {
     id: "clients",
     name: "Clientes",
     link: SYSTEM_ROUTES.CLIENTS.index,
     icon: <RiRectangleLine size={16} className="menu-icon" />,
+    roles: ["user", "admin"]
   },
   {
     id: "requests",
     name: "Requisições",
     link: SYSTEM_ROUTES.REQUESTS.index,
     icon: <RiRectangleLine size={16} className="menu-icon" />,
+    roles: ["user", "admin", "recruta", "cliente"]
   },
   {
     id: "users",
     name: "Usuários",
     link: SYSTEM_ROUTES.USERS.index,
     icon: <RiRectangleLine size={16} className="menu-icon" />,
+    roles: ["user", "admin"]
   },
   {
     id: "godsons",
     name: "Recrutas",
     link: SYSTEM_ROUTES.GODSONS.index,
     icon: <RiRectangleLine size={16} className="menu-icon" />,
+    roles: ["user", "admin", "cliente"]
   }
 ];
 
