@@ -18,7 +18,6 @@ import { FaCheckCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { API } from "../../../../service/api";
 
-
 const ModalCreate = ({ modal, toggle, refetchData }) => {
     const inputInitialState = {
         name: '',

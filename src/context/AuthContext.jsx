@@ -1,41 +1,30 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getUserData, isAuthenticated } from '../service/auth'; // Supondo que você tenha essas funções
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { isAuthenticated } from "../service/auth";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+export default function AuthProvider({ children }) {
+  const [user, setUser] = useState({});
+  const [authenticated, setAuthenticated] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const isAuth = await isAuthenticated();
-        setAuthenticated(isAuth);
-
-        if (isAuth) {
-          const userData = await getUserData();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    setAuthenticated(isAuthenticated);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, authenticated, loading }}>
+    <AuthContext.Provider
+      value={{ user, setUser, authenticated, setAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) throw new Error("useAuth must be used within a authProvider");
+
+  const { user, setUser, authenticated, setAuthenticated } = context;
+  return { user, setUser, authenticated, setAuthenticated };
+}

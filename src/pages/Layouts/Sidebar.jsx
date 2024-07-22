@@ -10,10 +10,9 @@ export const Sidebar = ({ setIsOpenSidebar }) => {
   const activeLink = (match) => {
     return pathname.includes(match) ? "active" : "";
   };
-
   const userRole = user?.role.toLowerCase() || "recruta";
   const filteredMenu = MENU.filter(item => item.roles.includes(userRole));
-  
+
   console.log("Sidebar user", user?.role);
   console.log("Sidebar filteredMenu", filteredMenu);
   return (
