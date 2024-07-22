@@ -13,60 +13,16 @@ import { Pagination } from "../../../components/Pagination";
 import { IsLoading } from "../../../components/IsLoading";
 import { API } from "../../../service/api";
 import { MdOutlineSearch } from "react-icons/md";
-import { BiEdit } from "react-icons/bi";
-import { RiDeleteBin2Line } from "react-icons/ri";
 import ModalRemove from "./Modals/Remove";
 import Swal from "sweetalert2";
 import ModalEditUser from "./Modals/Edit";
 import ModalCreateUser from "./Modals/Create";
 import { FaPlus } from "react-icons/fa";
-
-const usersRoles = [
-    {
-        "name": "Anthony Russo",
-        "clients": ["Read", "Edit", "Create"],
-        "insurers": ["Read", "Delete"],
-        "policies": ["Edit", "Create"],
-        "reports": ["Edit"],
-        "users": ["Read"]
-    },
-    {
-        "name": "Joe Russo",
-        "clients": ["Read"],
-        "insurers": ["Read"],
-        "policies": ["Read", "Edit"],
-        "reports": ["Edit"],
-        "users": ["Read", "Edit"]
-    },
-    {
-        "name": "Joss Whedon",
-        "clients": ["Read", "Edit"],
-        "insurers": ["Read"],
-        "policies": ["Read", "Edit"],
-        "reports": ["Edit"],
-        "users": ["Read", "Edit"]
-    },
-    {
-        "name": "Taika Waititi",
-        "clients": ["Read"],
-        "insurers": ["Read", "Edit"],
-        "policies": ["Read"],
-        "reports": ["Edit"],
-        "users": ["Read"]
-    },
-    {
-        "name": "James Gunn",
-        "clients": ["Read", "Edit"],
-        "insurers": ["Read"],
-        "policies": ["Read"],
-        "reports": ["Edit"],
-        "users": ["Read", "Edit"]
-    }
-];
+import { useNavigate } from "react-router-dom";
+import { getUser } from "../../../service/auth";
 
 const Users = () => {
     const [name, setName] = useState("");
-    const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -76,28 +32,15 @@ const Users = () => {
     const [to, setTo] = useState(0);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
-    const [modalEdit, setModalEdit] = useState(false);
-    const toggleEdit = () => setModalEdit(!modalEdit);
-    const [modalRemove, setModalRemove] = useState(false);
-    const toggleRemove = () => setModalRemove(!modalRemove);
     const [refresh, setRefresh] = useState(false);
     const refetchData = () => setRefresh(!refresh);
+    const navigate = useNavigate();
+    const user = getUser();
 
     const handleItemsPerPageChange = (e) => {
         const selectedItemsPerPage = parseInt(e.target.value, 10);
         setItemsPerPage(selectedItemsPerPage);
         setCurrentPage(0);
-    };
-
-    const handleEdit = (row) => {
-        setUser(row);
-        console.log(row);
-        toggleEdit();
-    };
-
-    const handleDelete = (row) => {
-        setUser(row);
-        toggleRemove();
     };
 
     const handleSearch = () => {
@@ -115,7 +58,7 @@ const Users = () => {
                     name: name,
                 },
             });
-            console.log("Response Users",response.data);
+            console.log("Response Users", response.data);
             setData(response.data)
             // if (Array.isArray(response.data.data)) {
             //     setData(response.data.data);
@@ -141,6 +84,12 @@ const Users = () => {
     }
 
     useEffect(() => {
+        if (!(["user", "admin"].includes(user.role?.toLowerCase()))) {
+            navigate('/requests');
+        }
+    }, []);
+
+    useEffect(() => {
         load({});
     }, [currentPage, itemsPerPage, refresh]);
 
@@ -153,7 +102,7 @@ const Users = () => {
                     <span>Novo Usuário</span>
                 </Button>
             </div>
-             <hr style={{ backgroundColor: '#1D401C' }}  />
+            <hr style={{ backgroundColor: '#1D401C' }} />
             <Form className="d-flex align-items-center gap-2">
                 <FormGroup>
                     <Label for="supplier">Pesquisar</Label>
@@ -232,20 +181,8 @@ const Users = () => {
                                                 <td className="text-dark">{item.gender}</td>
                                                 <td>
                                                     <div className="d-flex justify-content-end gap-3">
-                                                        <Button
-                                                            className="btn btn-sm p-1 shadow-none"
-                                                            style={{ border: "2px solid #1D401C", backgroundColor: "#1D401C" }}
-                                                            onClick={() => handleEdit(item)}
-                                                        >
-                                                            <BiEdit size={"18px"} color="#FFFFFF" />
-                                                        </Button>
-                                                        <Button
-                                                            className="btn btn-sm p-1 shadow-none"
-                                                            style={{ border: "2px solid #d1005d", backgroundColor: "#d1005d" }}
-                                                            onClick={() => handleDelete(item)}
-                                                        >
-                                                            <RiDeleteBin2Line size={"18px"} color="#FFFFFF" />
-                                                        </Button>
+                                                        <ModalEditUser data={item} refetchData={refetchData} key={'ModalEdit'} />
+                                                        <ModalRemove data={item} refetchData={refetchData} key={'ModalRemove'} />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -275,8 +212,6 @@ const Users = () => {
                 }
             </Table>
             <ModalCreateUser modal={modal} toggle={toggle} refetchData={refetchData} key={'ModalCreate'} />
-            {user && <ModalEditUser data={user} modal={modalEdit} toggle={toggleEdit} refetchData={refetchData} key={'ModalEdit'} />}
-            {user && <ModalRemove user={user} modal={modalRemove} toggle={toggleRemove} refetchData={refetchData} key={'ModalRemove'} />}
         </Fragment>
     );
 }

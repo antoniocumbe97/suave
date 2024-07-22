@@ -6,80 +6,22 @@ import { formatCurrency } from '../../../util';
 import { API } from '../../../service/api';
 import Swal from "sweetalert2";
 import './style.css';
-const data = {
-    series: [{
-        name: "sales",
-        data: [
-            { x: 'Sabão Aprovado', y: 200 },
-            { x: 'Sabão Pendente', y: 300 },
-            { x: 'Chá Aprovado', y: 150 },
-            { x: 'Chá Pendente', y: 300 },
-            { x: 'Chá Aprovado', y: 150 },
-            { x: 'Chá Pendente', y: 150 },
-            { x: 'Turbo Aprovado', y: 300 },
-            { x: 'Turbo Pendente', y: 150 },
-        ]
-    }],
-    options: {
-        chart: {
-            type: 'bar',
-            height: 480,
-            toolbar: {
-                show: false
-            },
-        },
-        xaxis: {
-            type: 'category',
-            labels: {
-                style: {
-                    colors: '#000000'
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#000000'
-                }
-            }
-        },
-        title: {
-            text: 'Product Types',
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 12,
-                borderRadiusApplication: 'end',
-                columnWidth: 25,
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        colors: '#f294c0',
-        grid: {
-            show: true,
-            borderColor: '#3e5c3d7d',
-            strokeDashArray: 2,
-            position: 'back',
-            xaxis: {
-                lines: {
-                    show: false
-                }
-            },
-            yaxis: {
-                lines: {
-                    show: true
-                }
-            },
-        },
-    }
-};
+import { getUser } from '../../../service/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [pieData, setPieData] = useState([]);
+    const [barData, setBarData] = useState([]);
     const [total, setTotal] = useState(0);
+    const navigate = useNavigate();
+    const user = getUser();
+
+    useEffect(() => {
+        if (!(["user", "admin"].includes(user.role?.toLowerCase()))) {
+            navigate('/requests');
+        }
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -87,16 +29,27 @@ const Dashboard = () => {
             try {
                 const response = await API.get('request/dashbordproduts/prices');
                 const response2 = await API.get('request/dashbordproduts/quantity');
-                console.log('Response 2', response2);
+                console.log('Response', response.data);
+                console.log('Response 2', response2.data);
                 const d = [
                     { x: "Sabão", y: response.data.Total_Sabão },
                     { x: "Chá de Cólicas", y: response.data.Total_Chá_de_colicas },
                     { x: "Chá de Fluxo", y: response.data.Total_Chá_de_fluxo },
                     { x: "Turbo", y: response.data.Total_Turbo },
                 ];
-                console.log('Response', response.data);
+                const d2 = [
+                    { x: 'Sabão Aprovado', y: response2.data.Sabão_Aprovado },
+                    { x: 'Sabão Pendente', y: response2.data.Sabão_Aprovado },
+                    { x: 'Chá de Fluxo Aprovado', y: response2.data.Chá_de_Fluxo_Aprovado },
+                    { x: 'Chá de Fluxo Pendente', y: response2.data.Chá_de_Fluxo_Pendente },
+                    { x: 'Chá de Cólicas Aprovado', y: response2.data.Chá_de_Cólicas_Aprovado },
+                    { x: 'Chá de Cólicas Pendente', y: response2.data.Chá_de_Cólicas_Pendente },
+                    { x: 'Turbo Aprovado', y: response2.data.Turbo_Aprovado },
+                    { x: 'Turbo Pendente', y: response2.data.Turbo_Pendente },
+                ];
                 setTotal(response.data.Todos);
                 setPieData(d);
+                setBarData(d2);
             } catch (error) {
                 if (error.code === 'ERR_NETWORK') {
                     Swal.fire({
@@ -178,7 +131,68 @@ const Dashboard = () => {
             </Card>
             <Card className='border shadow-none mt-3'>
                 <CardBody>
-                    <ReactApexChart options={data.options} series={data.series} type="bar" height={300} />
+                    <ReactApexChart
+                        options={{
+                            chart: {
+                                type: 'bar',
+                                height: 480,
+                                toolbar: {
+                                    show: false
+                                },
+                            },
+                            xaxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        colors: '#000000'
+                                    }
+                                }
+                            },
+                            yaxis: {
+                                labels: {
+                                    style: {
+                                        colors: '#000000'
+                                    }
+                                }
+                            },
+                            title: {
+                                text: 'Product Types',
+                            },
+                            plotOptions: {
+                                bar: {
+                                    borderRadius: 12,
+                                    borderRadiusApplication: 'end',
+                                    columnWidth: 25,
+                                }
+                            },
+                            dataLabels: {
+                                enabled: false
+                            },
+                            colors: '#f294c0',
+                            grid: {
+                                show: true,
+                                borderColor: '#3e5c3d7d',
+                                strokeDashArray: 2,
+                                position: 'back',
+                                xaxis: {
+                                    lines: {
+                                        show: false
+                                    }
+                                },
+                                yaxis: {
+                                    lines: {
+                                        show: true
+                                    }
+                                },
+                            },
+                        }}
+                        series={[{
+                            name: "sales",
+                            data: barData
+                        }]}
+                        type="bar"
+                        height={300}
+                    />
                 </CardBody>
             </Card>
 

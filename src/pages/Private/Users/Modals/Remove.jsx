@@ -7,8 +7,10 @@ import { MdClose } from "react-icons/md";
 import Swal from "sweetalert2";
 import { API } from "../../../../service/api";
 
-const ModalRemove = ({ modal, toggle, user, localRefetchData }) => {
-
+const ModalRemove = ({ data, localRefetchData }) => {
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+    const [user, setUser] = useState(data);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
@@ -24,8 +26,8 @@ const ModalRemove = ({ modal, toggle, user, localRefetchData }) => {
                     title: "Deletar Usuário",
                     iconHtml: iconHtml
                 });
-            }  catch (error) {
-            
+            } catch (error) {
+
                 if (error.code === 'ERR_NETWORK') {
                     Swal.fire({
                         icon: 'error',
@@ -40,7 +42,7 @@ const ModalRemove = ({ modal, toggle, user, localRefetchData }) => {
                 } else if (error.response.status === 422) {
                     setErrors(error.response.data.errors);
                 }
-                
+
             } finally {
                 setIsLoading(false);
             }
@@ -48,52 +50,61 @@ const ModalRemove = ({ modal, toggle, user, localRefetchData }) => {
     };
 
     return (
-        <Modal isOpen={modal} toggle={toggle} style={{ color: "var(--insignio-primary-text)" }}>
-            <div className="">
-                <div className="text-end">
-                    <Button
-                        onClick={toggle}
-                        color="transparent"
-                        style={{ marginBottom: -10 }}
-                        className="text-dark shadow-none border-0 mt-3"
-                    >
-                        <MdClose size={21} />
-                    </Button>
-                </div>
-                <div className="text-center">
-                    <div className="d-flex justify-content-center align-items-center mx-auto rounded-circle" style={{ backgroundColor: "#F8DDDD", width: 50, height: 50 }}>
-                        <RiDeleteBin2Line size={25} color="#C10F0C" />
+        <>
+            <Button
+                className="btn btn-sm p-1 shadow-none"
+                style={{ border: "2px solid #d1005d", backgroundColor: "#d1005d" }}
+                onClick={toggle}
+            >
+                <RiDeleteBin2Line size={"18px"} color="#FFFFFF" />
+            </Button>
+            <Modal isOpen={modal} toggle={toggle} style={{ color: "var(--insignio-primary-text)" }}>
+                <div className="">
+                    <div className="text-end">
+                        <Button
+                            onClick={toggle}
+                            color="transparent"
+                            style={{ marginBottom: -10 }}
+                            className="text-dark shadow-none border-0 mt-3"
+                        >
+                            <MdClose size={21} />
+                        </Button>
                     </div>
-                    <span className="d-block mt-2 mb-0 fw-bold" style={{ fontSize: 16 }}>Deletar Usuário</span>
+                    <div className="text-center">
+                        <div className="d-flex justify-content-center align-items-center mx-auto rounded-circle" style={{ backgroundColor: "#F8DDDD", width: 50, height: 50 }}>
+                            <RiDeleteBin2Line size={25} color="#C10F0C" />
+                        </div>
+                        <span className="d-block mt-2 mb-0 fw-bold" style={{ fontSize: 16 }}>Deletar Usuário</span>
+                    </div>
                 </div>
-            </div>
-            <ModalBody className="text-center">
-                <p className="mb-1">Tem certeza de que deseja excluir:</p>
-                <p className=" mb-4 fw-bold">Usuário: {user.name}</p>
-                <p className="mb-0">Esta ação não pode ser desfeita, todos os dados serão removidos.</p>
-            </ModalBody>
-            <ModalFooter className="border-0 mb-3">
-                <Button color="dark" size="md" onClick={toggle} outline>
-                    Cancelar
-                </Button>
-                {isLoading ?
-                    <Button color="danger" size="md" onClick={handleRemove}>
-                        <Spinner
-                            as="span"
-                            variant="white"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                            animation="grow"
-                        />
+                <ModalBody className="text-center">
+                    <p className="mb-1">Tem certeza de que deseja excluir:</p>
+                    <p className=" mb-4 fw-bold">Usuário: {user.name}</p>
+                    <p className="mb-0">Esta ação não pode ser desfeita, todos os dados serão removidos.</p>
+                </ModalBody>
+                <ModalFooter className="border-0 mb-3">
+                    <Button color="dark" size="md" onClick={toggle} outline>
+                        Cancelar
                     </Button>
-                    :
-                    <Button color="danger" size="md" onClick={handleRemove}>
-                        Deletar
-                    </Button>
-                }{' '}
-            </ModalFooter>
-        </Modal>
+                    {isLoading ?
+                        <Button color="danger" size="md" type="button">
+                            <Spinner
+                                as="span"
+                                variant="white"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                                animation="grow"
+                            />
+                        </Button>
+                        :
+                        <Button color="danger" size="md" onClick={handleRemove}>
+                            Deletar
+                        </Button>
+                    }{' '}
+                </ModalFooter>
+            </Modal>
+        </>
     );
 }
 export default ModalRemove;

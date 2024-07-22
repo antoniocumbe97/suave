@@ -1,10 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { NavTabsDetails } from "../../../../components/NabTabs";
 import { API } from "../../../../service/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CardHeader } from "reactstrap";
 import Swal from "sweetalert2";
 import Requests from "./Tabs/Requests";
+import { getUser } from "../../../../service/auth";
 
 const GodsonDetails = () => {
     const { id } = useParams();
@@ -14,6 +15,8 @@ const GodsonDetails = () => {
     const [refresh, setRefresh] = useState(false);
     const refetchData = () => setRefresh(!refresh);
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const user = getUser();
 
     const [tab, setTab] = useState(0);
     const tabs = [
@@ -54,6 +57,12 @@ const GodsonDetails = () => {
         }
         load();
     }, [refresh]);
+
+    useEffect(() => {
+        if (!(["user", "admin", "cliente"].includes(user.role?.toLowerCase()))) {
+            navigate('/requests');
+        }
+    }, []);
 
     return (
         <Fragment>

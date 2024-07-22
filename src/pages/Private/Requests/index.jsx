@@ -187,13 +187,13 @@ const Requests = () => {
                                                             <FaRegEye size={"18px"} color="#FFFFFF" />
                                                         </Button>
                                                     </Link>
-                                                    <Button
+                                                    {/* <Button
                                                         className="btn btn-sm p-1 shadow-none"
                                                         style={{ border: "2px solid #1D401C", backgroundColor: "#1D401C" }}
                                                         onClick={() => handlePreDelete(item)}
                                                     >
                                                         <BiEdit size={"18px"} color="#FFFFFF" />
-                                                    </Button>
+                                                    </Button> */}
                                                     <Button
                                                         className="btn btn-sm p-1 shadow-none"
                                                         style={{ border: "2px solid #d1005d", backgroundColor: "#d1005d" }}

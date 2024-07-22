@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { formatCurrency, getFormatedDate } from "../../../../util";
 import { FaCheck } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
+import { getUser } from "../../../../service/auth";
 
 const RquestDetails = () => {
     const { id } = useParams();
@@ -20,7 +21,9 @@ const RquestDetails = () => {
     const [refresh, setRefresh] = useState(false);
     const refetchData = () => setRefresh(!refresh);
     const [isLoading, setIsLoading] = useState(false);
+    const [can, setCan] = useState(false);
     const totalPrice = products?.reduce((sum, product) => sum + product.totalPrice, 0);
+    const user = getUser();
 
     const handleApprove = async () => {
         const advice = "Tem certeza que deseja aprovar?";
@@ -31,6 +34,11 @@ const RquestDetails = () => {
                 params.append('status', "aprovado");
                 const response = await API.post("/request/status", params.toString());
                 console.log('Request', response.data);
+                refetchData();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Aprovado com sucesso',
+                });
             } catch (error) {
                 console.error('Error', error)
                 if (error.code === 'ERR_NETWORK') {
@@ -54,6 +62,11 @@ const RquestDetails = () => {
                 params.append('status', "reprovado");
                 const response = await API.post("/request/status", params.toString());
                 console.log('Request', response.data);
+                refetchData();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Reprovado com sucesso',
+                });
             } catch (error) {
                 console.error('Error', error)
                 if (error.code === 'ERR_NETWORK') {
@@ -92,18 +105,27 @@ const RquestDetails = () => {
         load();
     }, [refresh]);
 
+    useEffect(() => {
+        if ((["user", "admin"].includes(user.role?.toLowerCase()))) {
+            setCan(true);
+        }
+    }, []);
+
     return (
         <Fragment>
+
             <div className="d-flex justify-content-between align-items-center mb-2 mt-1">
                 <h4 className="mb-0 text-dark fw-semibold">{`Req-${request?.id}`}</h4>
-                <div className='d-flex gap-2'>
-                    <Button size={'sm'} color={'primary'} className={'px-3'} onClick={handleApprove}>
-                        <FaCheck size={10} />
-                    </Button>
-                    <Button size={'sm'} color={'danger'} className={'px-3'} outline onClick={handleRepprove}>
-                        <MdClose size={16} />
-                    </Button>
-                </div>
+                {(request?.status === 'pendente' && can) &&
+                    <div className='d-flex gap-2'>
+                        <Button size={'sm'} color={'primary'} className={'d-flex align-items-center gap-2 px-3'} onClick={handleApprove}>
+                            <span>Aprovar</span> <FaCheck size={10} />
+                        </Button>
+                        <Button size={'sm'} color={'danger'} className={'d-flex align-items-center gap-2 px-3'} outline onClick={handleRepprove}>
+                            <span>Reprovar</span> <MdClose size={16} />
+                        </Button>
+                    </div>
+                }
             </div>
             <hr className='mb-0' />
             {isLoading ?

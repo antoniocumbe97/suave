@@ -16,7 +16,7 @@ import { Pagination } from "../../../components/Pagination";
 import { IsLoading } from "../../../components/IsLoading";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { MdOutlineSearch } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiEdit } from "react-icons/bi";
 import ModalRemove from "./Remove";
 import Swal from "sweetalert2";
@@ -46,6 +46,7 @@ const Godsons = () => {
     const refetchData = () => setRefresh(!refresh);
     const [modalCreate, setModalCreate] = useState(false);
     const toggleCreate = () => setModalCreate(!modalCreate);
+    const navigate = useNavigate();
 
     const search = () => {
         localRefetchData();
@@ -94,6 +95,12 @@ const Godsons = () => {
         }
         load();
     }, [currentPage, itemsPerPage, refresh, localRefresh]);
+
+    useEffect(() => {
+        if (!(["user", "admin", "cliente"].includes(user.role?.toLowerCase()))) {
+            navigate('/requests');
+        }
+    }, []);
 
     return (
         <Fragment>
