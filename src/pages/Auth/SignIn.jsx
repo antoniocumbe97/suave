@@ -78,7 +78,7 @@ export function SignIn() {
       saveUser(user);
       setUser(user);
       setAuthenticated(true);
-      navigate(DASHBOARD);
+      navigate('/');
       return response.data;
     } catch (error) {
       console.error('Erro ao tentar logar:', error);
