@@ -28,7 +28,7 @@ const RquestDetails = () => {
             try {
                 const params = new URLSearchParams();
                 params.append('id', id);
-                params.append('status', "Aprovado");
+                params.append('status', "aprovado");
                 const response = await API.post("/request/status", params.toString());
                 console.log('Request', response.data);
             } catch (error) {
@@ -51,7 +51,7 @@ const RquestDetails = () => {
             try {
                 const params = new URLSearchParams();
                 params.append('id', id);
-                params.append('status', "Rerovado");
+                params.append('status', "reprovado");
                 const response = await API.post("/request/status", params.toString());
                 console.log('Request', response.data);
             } catch (error) {
