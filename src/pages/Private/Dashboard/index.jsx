@@ -86,13 +86,15 @@ const Dashboard = () => {
             setIsLoading(true);
             try {
                 const response = await API.get('request/dashbordproduts/prices');
+                const response2 = await API.get('request/dashbordproduts/quantity');
+                console.log('Response 2', response2);
                 const d = [
                     { x: "Sabão", y: response.data.Total_Sabão },
                     { x: "Chá de Cólicas", y: response.data.Total_Chá_de_colicas },
                     { x: "Chá de Fluxo", y: response.data.Total_Chá_de_fluxo },
                     { x: "Turbo", y: response.data.Total_Turbo },
                 ];
-           //     console.log('Response', response.data);
+                console.log('Response', response.data);
                 setTotal(response.data.Todos);
                 setPieData(d);
             } catch (error) {
@@ -112,7 +114,7 @@ const Dashboard = () => {
 
     return (
         <div className="">
-            <img src={welcome} height={250} width={'100%'} style={{objectFit: 'cover'}} alt="WELCOME" className='' />
+            <img src={welcome} height={250} width={'100%'} style={{ objectFit: 'cover' }} alt="WELCOME" className='' />
             <Card className='border shadow-none mt-3'>
                 <CardBody>
                     <Row>

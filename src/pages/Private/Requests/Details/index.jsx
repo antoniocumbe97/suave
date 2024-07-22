@@ -14,18 +14,66 @@ import { MdClose } from "react-icons/md";
 
 const RquestDetails = () => {
     const { id } = useParams();
+    const [status, setStatus] = useState('');
     const [request, setRquest] = useState(null);
     const [products, setProducts] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const refetchData = () => setRefresh(!refresh);
     const [isLoading, setIsLoading] = useState(false);
     const totalPrice = products?.reduce((sum, product) => sum + product.totalPrice, 0);
+
+    const handleApprove = async () => {
+        const advice = "Tem certeza que deseja aprovar?";
+        if (window.confirm(advice) == true) {
+            try {
+                const params = new URLSearchParams();
+                params.append('id', id);
+                params.append('status', "Aprovado");
+                const response = await API.post("/request/status", params.toString());
+                console.log('Request', response.data);
+            } catch (error) {
+                console.error('Error', error)
+                if (error.code === 'ERR_NETWORK') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Network Error',
+                        text: 'Houve um problema ao conectar ao servidor. Por favor, verifique sua conexão com a internet.'
+                    });
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
+    const handleRepprove = async () => {
+        const advice = "Tem certeza que deseja reprovar?";
+        if (window.confirm(advice) == true) {
+            try {
+                const params = new URLSearchParams();
+                params.append('id', id);
+                params.append('status', "Rerovado");
+                const response = await API.post("/request/status", params.toString());
+                console.log('Request', response.data);
+            } catch (error) {
+                console.error('Error', error)
+                if (error.code === 'ERR_NETWORK') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Network Error',
+                        text: 'Houve um problema ao conectar ao servidor. Por favor, verifique sua conexão com a internet.'
+                    });
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
+
     useEffect(() => {
         const load = async () => {
             setIsLoading(true);
             try {
                 const response = await API.get(`/request/${id}`);
-           //     console.log('Request', response.data);
                 setRquest(response.data);
                 setProducts(response.data.products);
             } catch (error) {
@@ -49,10 +97,10 @@ const RquestDetails = () => {
             <div className="d-flex justify-content-between align-items-center mb-2 mt-1">
                 <h4 className="mb-0 text-dark fw-semibold">{`Req-${request?.id}`}</h4>
                 <div className='d-flex gap-2'>
-                    <Button size={'sm'} color={'primary'} className={'px-3'}>
+                    <Button size={'sm'} color={'primary'} className={'px-3'} onClick={handleApprove}>
                         <FaCheck size={10} />
                     </Button>
-                    <Button size={'sm'} color={'danger'} className={'px-3'} outline>
+                    <Button size={'sm'} color={'danger'} className={'px-3'} outline onClick={handleRepprove}>
                         <MdClose size={16} />
                     </Button>
                 </div>
@@ -137,15 +185,15 @@ const RquestDetails = () => {
                                 <p className='my-4 fw-semibold text-center text-dark pt-4'>Para finalizar a sua requisição, faça o pagamento por meio de um dos seguintes canais</p>
                                 <div className='d-flex justify-content-between gap-2 py-2'>
                                     <div className='text-center d-flex align-items-center justify-content-center flex-column gap-2'>
-                                        <img src={BIM} a className='img-fluid rounded' alt="BIM" width={"50%"} style={{maxWidth: 200}} />
+                                        <img src={BIM} a className='img-fluid rounded' alt="BIM" width={"50%"} style={{ maxWidth: 200 }} />
                                         <span className="fw-semibold text-dark">3104170</span>
                                     </div>
                                     <div className='text-center d-flex align-items-center justify-content-center flex-column gap-2'>
-                                        <img src={MPESA} className='img-fluid rounded' alt="M-Pesa" width={"50%"} style={{maxWidth: 200}} />
+                                        <img src={MPESA} className='img-fluid rounded' alt="M-Pesa" width={"50%"} style={{ maxWidth: 200 }} />
                                         <span className="fw-semibold text-dark">843104170</span>
                                     </div>
                                     <div className='text-center d-flex align-items-center justify-content-center flex-column gap-2'>
-                                        <img src={EMOLA} className='img-fluid rounded' alt="E-Mola" width={"50%"} style={{maxWidth: 200}} />
+                                        <img src={EMOLA} className='img-fluid rounded' alt="E-Mola" width={"50%"} style={{ maxWidth: 200 }} />
                                         <span className="fw-semibold text-dark">873104170</span>
                                     </div>
                                 </div>
