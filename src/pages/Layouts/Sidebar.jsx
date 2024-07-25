@@ -19,7 +19,7 @@ export const Sidebar = ({ setIsOpenSidebar }) => {
     <aside
       id="layout-menu"
       className="layout-menu menu-vertical menu   pt-0"
-      style={{ position: "sticky", top: 0, backgroundColor: "#8C207A" }}
+      style={{ position: "sticky", top: 0, backgroundColor: "rgb(233, 95, 159)" }}
     >
       <div className="demo d-flex w-100 px-4 fw-bold" style={{ margin: '15px auto' }}>
         <Link to={SYSTEM_ROUTES.DASHBOARD.index} className="app-brand-link d-flex justify-content-end text-white">Suave</Link>
